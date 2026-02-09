@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-
+export const dynamic = 'force-dynamic';
 export default async function ShopPage() {
   // Fetch products from Supabase
   const { data: products } = await supabase.from('products').select('*')
@@ -45,4 +45,5 @@ export default async function ShopPage() {
       </div>
     </div>
   )
+
 }
