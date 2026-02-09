@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-
+export const dynamic = 'force-dynamic';
 export default async function SermonsPage() {
   const { data: sermons } = await supabase.from('sermons').select('*').order('published_at', { ascending: false });
 
@@ -28,4 +28,5 @@ export default async function SermonsPage() {
       </div>
     </div>
   )
+
 }
