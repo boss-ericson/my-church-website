@@ -10,47 +10,56 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning className="bg-white text-black antialiased">
+      <body suppressHydrationWarning className="bg-white text-black antialiased overflow-x-hidden">
         
-        {/* --- NAVIGATION BAR --- */}
-        <nav className="bg-white border-b-2 border-yellow-500 p-2 sticky top-0 z-50 shadow-sm">
-          <div className="max-w-7xl mx-auto flex justify-between items-center px-4">
+        {/* --- RESPONSIVE NAVIGATION BAR --- */}
+        <nav className="bg-white border-b-2 border-yellow-500 sticky top-0 z-50 shadow-md">
+          <div className="max-w-7xl mx-auto">
             
-            {/* LOGO & CHURCH NAME SECTION */}
-            <a href="/" className="flex items-center gap-4 hover:opacity-90 transition-all py-1">
-              
-              {/* Logo Circle Container */}
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-purple-900 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-yellow-500 shadow-xl relative">
-                <img 
-                  src="/logo.png" 
-                  alt="Glorious Overflowing Testimonies Logo" 
-                  className="w-full h-full object-contain p-2" 
-                  onError={(e) => {
-                    e.currentTarget.src = 'https://via.placeholder.com/150/4c1d95/eab308?text=GOT';
-                  }} 
-                />
+            {/* TOP SECTION: LOGO & BRANDING */}
+            <div className="px-4 py-3 flex items-center justify-between md:justify-start md:gap-6">
+              <a href="/" className="flex items-center gap-3 hover:opacity-90 transition-all">
+                {/* Logo - Sized perfectly for mobile vs desktop */}
+                <div className="w-12 h-12 md:w-20 md:h-20 bg-purple-900 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-yellow-500 shadow-lg">
+                  <img 
+                    src="/logo.png" 
+                    alt="GOT Logo" 
+                    className="w-full h-full object-contain p-1.5 md:p-2" 
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://via.placeholder.com/150/4c1d95/eab308?text=GOT';
+                    }} 
+                  />
+                </div>
+                
+                {/* Church Name - Specifically fixed for mobile visibility */}
+                <div className="flex flex-col justify-center">
+                  <h1 className="font-black text-[15px] md:text-2xl text-purple-900 leading-tight uppercase tracking-tighter">
+                    Glorious <span className="block sm:inline">Overflowing</span>
+                  </h1>
+                  <span className="text-yellow-600 font-bold text-[10px] md:text-sm tracking-[0.15em] uppercase leading-none">
+                    Testimonies
+                  </span>
+                </div>
+              </a>
+
+              {/* Mobile Status Indicator (Subtle Red Dot) */}
+              <div className="md:hidden flex items-center gap-2 px-2 py-1 bg-purple-50 rounded-lg">
+                <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                <span className="text-[9px] font-black text-purple-900 uppercase">Live</span>
               </div>
-              
-              {/* Branding Text */}
-              <div className="hidden sm:block">
-                <h1 className="font-black text-lg md:text-xl text-purple-900 leading-none uppercase tracking-tighter">
-                  Glorious Overflowing
-                </h1>
-                <span className="text-yellow-600 font-bold text-xs md:text-sm tracking-[0.2em] uppercase">
-                  Testimonies
-                </span>
+            </div>
+
+            {/* BOTTOM SECTION: NAVIGATION LINKS */}
+            {/* On mobile, this becomes a horizontal scrolling menu so links never squash */}
+            <div className="border-t border-gray-100 md:border-none">
+              <div className="flex items-center justify-start md:justify-center gap-6 px-4 py-3 overflow-x-auto no-scrollbar scroll-smooth">
+                <a href="/" className="text-[11px] md:text-xs font-black uppercase tracking-widest text-purple-900 hover:text-yellow-600 transition whitespace-nowrap">Home</a>
+                <a href="/live" className="text-[11px] md:text-xs font-black uppercase tracking-widest text-purple-900 hover:text-yellow-600 transition whitespace-nowrap">Live</a>
+                <a href="/testimonies" className="text-[11px] md:text-xs font-black uppercase tracking-widest text-purple-900 hover:text-yellow-600 transition whitespace-nowrap">Testimonies</a>
+                <a href="/shop" className="text-[11px] md:text-xs font-black uppercase tracking-widest text-purple-900 hover:text-yellow-600 transition whitespace-nowrap">Shop</a>
+                <a href="/sermons" className="text-[11px] md:text-xs font-black uppercase tracking-widest text-purple-900 hover:text-yellow-600 transition whitespace-nowrap">Sermons</a>
+                <a href="/contact" className="text-[11px] md:text-xs font-black uppercase tracking-widest text-purple-900 hover:text-yellow-600 transition whitespace-nowrap">Contact</a>
               </div>
-            </a>
-            
-            {/* --- PUBLIC NAV LINKS --- */}
-            <div className="flex items-center gap-3 md:gap-6 text-[10px] md:text-xs font-black uppercase tracking-widest">
-              <a href="/" className="text-purple-900 hover:text-yellow-600 transition">Home</a>
-              <a href="/live" className="text-purple-900 hover:text-yellow-600 transition">Live</a>
-              {/* New Testimonies Link */}
-              <a href="/testimonies" className="text-purple-900 hover:text-yellow-600 transition">Testimonies</a>
-              <a href="/shop" className="text-purple-900 hover:text-yellow-600 transition text-nowrap">Shop</a>
-              <a href="/sermons" className="text-purple-900 hover:text-yellow-600 transition text-nowrap">Sermons</a>
-              <a href="/contact" className="text-purple-900 hover:text-yellow-600 transition">Contact</a>
             </div>
           </div>
         </nav>
@@ -60,30 +69,26 @@ export default function RootLayout({
           {children}
         </main>
 
-        {/* --- GLOBAL COMPONENTS --- */}
         <WhatsAppButton />
 
-        {/* --- FOOTER --- */}
-        <footer className="bg-purple-950 text-white py-12 px-8 mt-20 border-t-8 border-yellow-500">
+        {/* --- MOBILE-FRIENDLY FOOTER --- */}
+        <footer className="bg-purple-950 text-white py-12 px-6 mt-10 border-t-8 border-yellow-500">
           <div className="max-w-7xl mx-auto text-center">
-            {/* Small decorative logo for footer */}
-            <div className="flex justify-center mb-6">
-               <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center border border-yellow-500/50 shadow-lg">
-                  <span className="text-yellow-500 font-bold text-xs uppercase">GOT</span>
-               </div>
+            <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-yellow-500/50 mx-auto mb-6">
+              <span className="text-yellow-500 font-bold text-[10px]">GOT</span>
             </div>
             
-            <p className="font-black text-yellow-500 mb-2 uppercase tracking-widest text-lg">
+            <p className="font-black text-yellow-500 mb-2 uppercase tracking-widest text-lg md:text-xl">
               Glorious Overflowing Testimonies
             </p>
-            <p className="text-sm text-purple-200 opacity-70 mb-6 italic max-w-md mx-auto">
+            <p className="text-xs md:text-sm text-purple-200 opacity-70 mb-8 italic max-w-sm mx-auto">
               "Shouting His Praise, Sharing Our Stories."
             </p>
             
-            <div className="h-px w-full bg-purple-800/30 mb-6"></div>
+            <div className="h-px w-20 bg-purple-800 mx-auto mb-8"></div>
             
-            <p className="text-[10px] md:text-xs text-purple-300 opacity-50 uppercase tracking-widest">
-              © {new Date().getFullYear()} All Rights Reserved. Faith • Worship • Testimony
+            <p className="text-[10px] text-purple-300 opacity-40 uppercase tracking-[0.3em]">
+              © {new Date().getFullYear()} All Rights Reserved
             </p>
           </div>
         </footer>
