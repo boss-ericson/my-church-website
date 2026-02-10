@@ -5,10 +5,6 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
 export default function AdminDashboard() {
-  // --- SECURITY STATE ---
-  const [isAuthorized, setIsAuthorized] = useState(false)
-  const [passwordInput, setPasswordInput] = useState('')
-  
   // --- DASHBOARD STATES ---
   const [activeTab, setActiveTab] = useState('live') 
   const [status, setStatus] = useState('')
@@ -20,25 +16,11 @@ export default function AdminDashboard() {
   const [sSpeaker, setSSpeaker] = useState('')
   const [sUrl, setSUrl] = useState('')
 
-  // 1. SECURITY CHECK HANDLER
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    const secretKey = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
-    
-    if (passwordInput === secretKey) {
-      setIsAuthorized(true)
-    } else {
-      alert("❌ Incorrect Admin Key. Access Denied.")
-    }
-  }
-
-  // 2. DATA FETCHING (Only runs once authorized)
+  // DATA FETCHING
   useEffect(() => {
-    if (isAuthorized) {
-      fetchCurrentLiveStatus()
-      fetchPendingTestimonies()
-    }
-  }, [isAuthorized, activeTab])
+    fetchCurrentLiveStatus()
+    fetchPendingTestimonies()
+  }, [activeTab])
 
   async function fetchCurrentLiveStatus() {
     const { data } = await supabase.from('livestream_status').select('is_live').eq('id', 1).single()
@@ -77,40 +59,6 @@ export default function AdminDashboard() {
     if (!error) { setStatus('🗑️ Testimony Deleted'); fetchPendingTestimonies(); }
   }
 
-  // --- RENDER CONDITION 1: SHOW LOCK SCREEN ---
-  if (!isAuthorized) {
-    return (
-      <div className="min-h-screen bg-purple-950 flex items-center justify-center px-6">
-        <div className="max-w-md w-full">
-          <div className="bg-white p-8 md:p-12 rounded-[40px] shadow-2xl text-center border-b-8 border-yellow-500">
-            <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-3xl">🔑</span>
-            </div>
-            <h2 className="text-3xl font-black text-purple-900 uppercase mb-2">Admin Portal</h2>
-            <p className="text-gray-400 font-bold text-[10px] uppercase tracking-[0.3em] mb-8">Secure Access Only</p>
-            
-            <form onSubmit={handleLogin} className="space-y-4">
-              <input 
-                type="password" 
-                placeholder="ENTER SECRET KEY" 
-                className="w-full p-5 bg-gray-50 border-2 border-purple-50 rounded-2xl text-center font-black text-purple-900 tracking-widest outline-none focus:border-purple-900 transition-all"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-              />
-              <button className="w-full bg-purple-900 text-white p-5 rounded-2xl font-black uppercase shadow-lg hover:bg-black transition-all active:scale-95">
-                Unlock Dashboard
-              </button>
-            </form>
-          </div>
-          <p className="text-center text-purple-300/50 text-[10px] mt-8 uppercase tracking-widest">
-            Glorious Overflowing Testimonies © 2026
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  // --- RENDER CONDITION 2: SHOW DASHBOARD ---
   return (
     <div className="min-h-screen bg-gray-50 pt-12 pb-20 px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
@@ -142,7 +90,6 @@ export default function AdminDashboard() {
         {status && <div className="mb-6 p-4 bg-yellow-400 text-purple-900 font-black rounded-2xl text-center text-xs uppercase animate-pulse">{status}</div>}
 
         <div className="bg-white p-6 md:p-10 rounded-[40px] shadow-xl border border-purple-100">
-          
           {activeTab === 'live' && (
             <div className="text-center py-10">
                 <h2 className="text-2xl font-black text-purple-900 uppercase mb-8">Stream Management</h2>
@@ -156,9 +103,9 @@ export default function AdminDashboard() {
           {activeTab === 'sermons' && (
             <form onSubmit={handleSermon} className="space-y-4 max-w-2xl mx-auto">
               <h2 className="text-2xl font-black text-purple-900 uppercase mb-4 text-center">Upload Sermon</h2>
-              <input placeholder="SERMON TITLE" className="w-full p-5 bg-gray-50 border-2 rounded-2xl font-bold" value={sTitle} onChange={e => setSTitle(e.target.value)} required />
-              <input placeholder="SPEAKER NAME" className="w-full p-5 bg-gray-50 border-2 rounded-2xl font-bold" value={sSpeaker} onChange={e => setSSpeaker(e.target.value)} required />
-              <input placeholder="YOUTUBE LINK" className="w-full p-5 bg-gray-50 border-2 rounded-2xl font-bold" value={sUrl} onChange={e => setSUrl(e.target.value)} required />
+              <input placeholder="SERMON TITLE" className="w-full p-5 bg-gray-50 border-2 rounded-2xl font-bold text-black" value={sTitle} onChange={e => setSTitle(e.target.value)} required />
+              <input placeholder="SPEAKER NAME" className="w-full p-5 bg-gray-50 border-2 rounded-2xl font-bold text-black" value={sSpeaker} onChange={e => setSSpeaker(e.target.value)} required />
+              <input placeholder="YOUTUBE LINK" className="w-full p-5 bg-gray-50 border-2 rounded-2xl font-bold text-black" value={sUrl} onChange={e => setSUrl(e.target.value)} required />
               <button className="w-full bg-purple-900 text-white p-5 rounded-2xl font-black uppercase hover:bg-yellow-500 hover:text-purple-900 transition-all">Post to Archive</button>
             </form>
           )}
@@ -167,7 +114,7 @@ export default function AdminDashboard() {
             <div className="space-y-6">
                 <h2 className="text-2xl font-black text-purple-900 uppercase text-center mb-6">Pending Review</h2>
                 {pendingTestimonies.length === 0 ? (
-                    <p className="text-center text-gray-400 italic font-bold">The altar is quiet... no new testimonies yet.</p>
+                    <p className="text-center text-gray-400 italic font-bold">No new testimonies yet.</p>
                 ) : (
                     pendingTestimonies.map(t => (
                         <div key={t.id} className="bg-purple-50 p-6 rounded-3xl border-2 border-purple-100">
